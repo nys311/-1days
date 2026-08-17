@@ -117,6 +117,10 @@ engine hay gateway.
 - Không giới hạn số người thắng đồng thời theo phe; nếu Black Hat và White Hat cùng bị xoá sổ
   trong cùng 1 sự kiện, Insider thắng (điều kiện đặc thù hơn được ưu tiên). Có thêm luật "người
   sống sót cuối cùng thắng theo phe của họ" để đảm bảo ván luôn kết thúc kể cả bàn 2-3 người.
+- **Phòng thủ cho SERVER**: luật gốc mô tả công thức tổng kết SERVER CHECK là `MAX(số ATTACK hiệu
+  lực - số DEFEND, 0)` nhưng chỉ mô tả rõ cách ATTACK vào được "array của server" (qua tấn công
+  úp), không nói rõ DEFEND vào bằng cách nào. Diễn giải: cho phép chơi DEFEND úp nhắm vào SERVER
+  (đối xứng với ATTACK úp) để công thức trừ-DEFEND thực sự có ý nghĩa, thay vì DEFEND luôn = 0.
 
 ## 6. Không dùng ảnh thật / không có rủi ro bản quyền
 
@@ -125,7 +129,29 @@ không cần key, license cho phép dùng thương mại), lưu thành SVG cục
 runtime. Toàn bộ icon khung thẻ/loại lá/THE KERN/SERVER là SVG tự vẽ (flat style), vừa an toàn
 bản quyền vừa dễ đổi theo từng theme.
 
-## 7. Việc còn để ngỏ (future work)
+## 7. Kiểm thử bot-vs-bot
+
+Chạy 20 ván bot-vs-bot tự động (Random + Rule, không qua matchmaking/DB — gọi thẳng `engine` +
+`bots`), trải đều số người chơi 2–8, để lộ ra và sửa các lỗi sau:
+
+- **Bug thật đã sửa**: DEFEND không thể queue vào SERVER (xem mục 5 ở trên — công thức SERVER
+  CHECK trừ-DEFEND trước đó luôn nhận DEFEND=0, vô hiệu hoá 1 nửa công thức). Bot service crash
+  toàn bộ tiến trình nếu gặp `botLevel` không hợp lệ thay vì chỉ lỗi 1 ghế — thêm fallback về
+  `RANDOM` + log cảnh báo. Bot chưa từng thử tấn công THE KERN (Black Hat không theo đuổi điều
+  kiện thắng thật của phe mình) — thêm hành vi chủ động tấn công Kern cho cả 2 loại bot.
+- **Không phải bug, là quan sát cân bằng**: 5/20 ván (25%) kết thúc nhanh (2–33 vòng) khi Black
+  Hat rush THE KERN thành công; 15/20 ván không hội tụ trong 25 giây mô phỏng (hàng trăm đến
+  hàng nghìn vòng) vì thắng-bằng-tiêu-hao (loại hết Black Hat/White Hat) hội tụ rất chậm — phần
+  lớn ATTACK bị vô hiệu do điểm ≤ TECH LEVEL mục tiêu, và mỗi đòn trúng chỉ trừ đúng 1 Máu theo
+  luật gốc. Đây là đặc tính cân bằng của bộ luật gốc (Máu 3–5, phần lớn ATTACK giá trị thấp so
+  với TECH LEVEL phổ biến 3–5), không phải lỗi engine — không tự ý chỉnh nếu chưa được yêu cầu,
+  chỉ ghi nhận ở đây để cân nhắc sau (vd. tăng sát thương hiệu lực, hoặc giảm ngưỡng TECH LEVEL).
+- Toàn bộ 20 ván (kể cả 15 ván timeout) không có bất kỳ crash/lỗi 500 nào ở `engine` lẫn `bots`
+  trên mọi số người chơi 2–8 — xác nhận vòng lặp pha (DRAW→...→END_TURN→SERVER CHECK→round mới),
+  hệ thống phản ứng (DEFEND/DENY), và toàn bộ năng lực persona đã kích hoạt đúng vẫn ổn định qua
+  hàng nghìn vòng liên tục.
+
+## 8. Việc còn để ngỏ (future work)
 
 - Alpha-beta bot: cần một bản mô phỏng luật thuần (không I/O) để search cây nước đi.
 - Reconnect sau khi service `engine` restart: hiện state chỉ ở RAM, mất khi restart — cần Redis

@@ -7,22 +7,32 @@ export const RandomBot: BotStrategy = {
     const my = me(view, myPlayerId);
 
     if (view.phase === "PREPARE") {
-      const defend = handCardsOfSubtype(my.hand, ActionSubtype.DEFEND);
-      if (defend.length > 0 && Math.random() < 0.5) {
-        return { type: "PREPARE_SELF", cardInstanceId: defend[0].instanceId! };
-      }
+      // No point queueing a self-DEFEND here unless something is actually queued against us —
+      // that only happens via a face-down attack, which lands directly in the target's payload
+      // zone at play-time (not during PREPARE). Keep hand DEFENDs in reserve for REACT_DEFEND
+      // instead of burning them pre-emptively for nothing.
       return { type: "END_PHASE" };
     }
 
     if (view.phase === "ACTION") {
       const attacks = handCardsOfSubtype(my.hand, ActionSubtype.ATTACK);
       const targets = otherAlivePlayers(view, myPlayerId);
-      if (attacks.length > 0 && my.energy > 0 && targets.length > 0 && Math.random() < 0.6) {
+
+      // Black Hat's actual win condition is claiming a FLAG from THE KERN — attempt it sometimes.
+      if (my.baseRole === "BLACKHAT" && attacks.length > 0 && my.energy > 0 && view.kern.remaining > 0 && Math.random() < 0.3) {
+        const card = attacks[Math.floor(Math.random() * attacks.length)];
+        return { type: "PLAY_CARD", cardInstanceId: card.instanceId!, faceUp: true, target: { kind: "KERN" } };
+      }
+
+      if (attacks.length > 0 && my.energy > 0 && targets.length > 0 && Math.random() < 0.7) {
         const target = targets[Math.floor(Math.random() * targets.length)];
+        // Still "random" in target/face/whether-to-act, but not in wasting a weak attack that
+        // auto-fails the TECH LEVEL check — a real (if unsophisticated) player would do the same.
+        const card = attacks.slice().sort((a, b) => Number(b.defId?.split("_")[1] ?? 0) - Number(a.defId?.split("_")[1] ?? 0))[0];
         return {
           type: "PLAY_CARD",
-          cardInstanceId: attacks[0].instanceId!,
-          faceUp: true,
+          cardInstanceId: card.instanceId!,
+          faceUp: Math.random() < 0.6, // mix face-up (immediate, reactable) and face-down (queued)
           target: { kind: "PLAYER", playerId: target.id },
         };
       }

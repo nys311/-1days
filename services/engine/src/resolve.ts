@@ -245,8 +245,18 @@ function handlePlayCard(
       player.hand.push(card);
       throw new RuleError("Rút điện chỉ dùng để phản ứng (REACT_DENY).");
     case ActionSubtype.DEFEND:
+      if (target.kind === "SERVER") {
+        // Queued into SERVER's own zone, same as a face-down attack — counted at SERVER_CHECK
+        // against the queued ATTACK count (MAX(attackCount - defendCount, 0)).
+        card.location = CardLocation.SERVER_ZONE;
+        card.face = CardFace.FACE_DOWN;
+        card.ownerId = player.id;
+        state.server.zone.push(card);
+        log(`${player.displayName} úp 1 lá Phòng thủ để bảo vệ SERVER.`);
+        return;
+      }
       player.hand.push(card);
-      throw new RuleError("Phòng thủ chỉ có thể tự dùng cho bản thân.");
+      throw new RuleError("Phòng thủ chỉ có thể tự dùng cho bản thân hoặc để bảo vệ SERVER.");
     default:
       player.hand.push(card);
       throw new RuleError(`${def.name} không thể dùng theo cách này.`);

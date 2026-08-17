@@ -59,7 +59,10 @@ async function tick(roomId: string) {
       for (const seat of seats) {
         const view = await fetchView(engineUrl, roomId, seat.playerId);
         if (view.winner) return;
-        const strategy = STRATEGIES[seat.botLevel];
+        const strategy = STRATEGIES[seat.botLevel] ?? STRATEGIES.RANDOM;
+        if (!STRATEGIES[seat.botLevel]) {
+          console.warn(`[bots] unknown botLevel "${seat.botLevel}" for ${seat.playerId}, falling back to RANDOM`);
+        }
 
         if (view.pendingReaction && view.pendingReaction.attackerId !== seat.playerId) {
           const reactionAction = strategy.decideReaction(view, seat.playerId);

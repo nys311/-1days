@@ -1,7 +1,7 @@
 # -1 DAYS
 
 A browser-based, real-time multiplayer board game (2–8 players) themed around cyber
-security, built as a BANG!-style social deduction game. See [`DESIGN.md`](DESIGN.md) for the
+security, built as a social-deduction game with its own rule set. See [`DESIGN.md`](DESIGN.md) for the
 architecture and [`PLAYER_GUIDE.md`](PLAYER_GUIDE.md) for how to actually play.
 
 ## Project layout

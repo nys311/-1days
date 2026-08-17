@@ -34,8 +34,8 @@ export const RulesPage: React.FC = () => {
       <section className="rules-section">
         <h2>1. Tổng quan</h2>
         <p>
-          <strong>-1 DAYS</strong> là board game chủ đề an ninh mạng cho 2-8 người chơi, cơ chế lấy cảm hứng từ BANG!
-          nhưng luật riêng. Mỗi người có một <strong>Base Role</strong> (vai trò ẩn) và một <strong>PERSONA</strong>{" "}
+          <strong>-1 DAYS</strong> là board game chủ đề an ninh mạng cho 2-8 người chơi với bộ luật riêng. Mỗi người có
+          một <strong>Base Role</strong> (vai trò ẩn) và một <strong>PERSONA</strong>{" "}
           (nhân cách, luôn công khai) quyết định chỉ số và năng lực đặc biệt. Ván đấu xoay quanh việc bảo vệ/tấn công{" "}
           <strong>SERVER</strong> và <strong>THE KERN</strong> ở giữa bàn.
         </p>
