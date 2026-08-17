@@ -1,0 +1,29 @@
+.hand-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem 0.8rem 0.9rem;
+  background: var(--bg-elevated);
+  border-top: 1.5px solid var(--border);
+}
+
+.hand-zone__label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--text-dim);
+}
+
+.hand-zone__cards {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.4rem 0.1rem 0.6rem;
+  min-height: 132px;
+}
+
+.hand-zone__empty {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  align-self: center;
+}

@@ -1,0 +1,209 @@
+Làm 1 board game để host lên .render.com tên game -1 DAYS . Chủ đề CYBER SECURITY . Cơ chế gần như BANG! khác rule
+
+Max người chơi: 3 - 8
+
+Có
+
+- Người chơi
+    + Base role
+    + PERSONA (cung cấp thông tin năng lực và các chỉ số HP,Energy, TECH LEVEL )
+    + HP (Máu)
+    + Energy (năng lượng)
+    + TECH LEVEL (Công Nghệ)
+    + Ability (Năng lực)
+    + Status Trạng thái: Alive / 404
+    + is_audit: 
+    + Defeated_base_role : [{"name": "", "base_role":""},]
+
+Action:
+    - THAO TÁC úp bài (ảnh HTTPS)
+        Khi thao tác úp bài, lá bái không được thực thi (EXEC) cho đến pha Giải Mã
+    - THAO TÁC ngửa bài (ảnh HTTP)
+        Có tác dụng ngay nếu không bị vô hiệu bởi lá RÚT ĐIỆN
+
+- THE KERN (shared objective / game object ở giữa bàn trong đó white hat bảo vệ và black hat tấn công nó) trong THE KERN chứa FLAG
+- Các lá trong THE KERN ngẫu nhiên thứ tự:
+    + 2 FLAG (blackhat WIN) (blackhat lấy được 1 trong 2 là thắng, khác nhau image và mô tả)
+        - 1 Back-up (sau khi bị black hat lấy thì có hoạt ảnh "Đừng lưu back up trong server")
+        - 1 
+    + 1 Dân chủ (image súng) (ACTION) : Uy hiếp 1 người được chọn 1 trong 2 action
+        - cướp 2 lá bất kỳ của họ (kể cả KIT, trừ Base-role và PERSONA)
+        - Lật 1 lá bất kỳ của người đó, kể cả Base-role
+    + 1 Vận xui (ACTION): -2 lá trên tay người nhận, nếu trên tay không có thì trừ vào lượt sau
+    + 1 Siêu nâng cấp (KIT): Nâng cấp max bản thân
+    + 1 Quyền năng của Caesar (ACTION): Tung xúc xắc , cả bàn swap bài cho người bên trái bằng số xúc xắc tung ra
+
+Base role:
+- INSPECTOR ( Thanh tra)
+    + Không được bốc PERSONA, nhận PERSONA = INSPECTOR
+    + thắng cùng whitehat
+- Whitehat
+    + Thắng khi toàn bộ black hat bị hạ gục
+- Blackhat
+    + Thắng khi lấy được FLAG
+- INSIDER (Gián điệp)
+    + Thắng khi toàn bộ white + black bị hạ gục (không gồm INSPECTOR)
+
+Cách nhận biết toàn bộ phe khác bị hạ gục:
+- Số Base-role bị lật trên bảng chung của phe trắng + 
+
+
+Lá bài có các loại:
+- Base-role (Vai trò):
+- PERSONA (Nhân cách)
+- ACTION
+- KIT
+
+
+
+Các lá ACTION (có hiệu lực 1 lần):
+- 48 lá Tấn công (ATTACK) (8 lá x điểm 1->6): -1 HP của đối tượng tấn công nếu không bị chặn
+- 32 lá Phòng Thủ (DEFEND) : 
+    + Chặn được 1  lá tấn công có điểm bất kỳ trong lượt của người bị tấn công. 
+    + Nếu không ra lá này trong thời gian cho phép thì bị trừ điểm
+- 08 lá Rút điện (DENY): 
+    + Chặn mọi lá úp trong phiên GIẢI MÃ nếu THAO TÁC trước khi lật.
+    + Chặn tấn công cho 1 người khác
+    + Chặn tấn công cho server trong mọi trường hợp (Trong pha GIẢI MÃ của server, trước khi Tổng kết thì sẽ chặn mọi thao tác kể cả nâng cấp)
+
+- 4 lá LUCKY : Rút thêm 2 Lá trong chồng bài
+- 4 lá PHISHING: Yêu cầu người khác đưa 1 lá của họ
+- 4 Ransomeware: Hủy 1 lá bất kỳ trên bàn trừ BASEROLE và PERSONAL
+- 4 Zeroday: Cướp 1 lá bất kỳ trên bàn trừ BASEROLE và PERSONAL
+- 4 Bitcoin: Mua 1 lượt ra tù
+- 4 Incident Response: + 1 Máu
+
+lá KIT (trang bị vĩnh viễn cho đến khi bị loại bỏ):
+- 2 Bò húc: + 1 Năng lượng
+- 16 lá Nâng cấp (UP LEVEL)
+
+Đối tượng:
+Chồng bài bốc: Chứa các lá ACTION + KIT
+
+
+Tiến trình game:
+
+Chuẩn bị
+    Ghép bàn
+    Game bắt đầu N người chơi ( 2<=N<=8):
+    - Chia bài:
+        - base-role: Mỗi người 1 lá 
+            2 người: 1 white + 1 black
+            3 người: 1 white + 1 black + 1 gray
+            4 người: 1 INSPECTOR + 1 white + 2 black
+            5 người: 1 INSPECTOR + 1 white + 2 black + 1 gray
+            6 người: 1 INSPECTOR + 2 white + 2 black + 1 gray
+            7 người: 1 INSPECTOR + 2 white + 3 black + 1 gray
+            8 người: 1 INSPECTOR + 3 white + 3 black + 1 gray
+        - PERSONA: Mỗi người 1 lá INSPECTOR không được chia
+        - SERVER: 6 lá bài
+        - cập nhật thông tin:
+            + TECH LEVEL ban đầu = 0
+            + HP (Máu)
+            + Energy (năng lượng)
+            + Ability (Năng lực)
+            + Trạng thái: Alive
+            + is_audit = False
+            + Defeated_base_role = [] 
+        - Chồng bài bốc (Xáo bài rồi chia): 6 lá mỗi người, INSPECTOR + 1 lá Giám sát(Audit)
+        - Trước mặt 1 người sẽ có :
+            + base-role (úp bài)
+            + PERSONA (ngửa bài)
+            + PAYLOAD ZONE (chứa các lá ACTION ÚP): chưa có BÀI
+            + KIT ZONE: chưa có bài
+Bắt đầu:
+
+1 ROUND
+    - Từ 1 người bất kỳ hoặc bên trái của INSPECTOR, đánh theo bên trái (tức là INSPECTOR là người cuối lượt)
+
+    1 Phase người chơi (Không gồm INSPECTOR) gồm:
+    - BỐC BÀI: Nếu số bài trên tay < Năng lượng tối đa : + 2 Lá
+    - CHUẨN BỊ: ACTION trước khi giải mã chỉ với bản thân (-1 Năng lượng mỗi action)
+    - GIẢI MÃ: Lật các lá úp trước mặt, nếu tổng DEFEND >= tổng ATTACK có hiệu lực( ATTACK có điểm > TECH LEVEL) không bị trừ Máu , DEFEND < tổng ATTACK : -1 Máu
+        + Nếu Máu = 0 => bị hạ gục =>  Status = 404, 
+            + Nếu lúc này đang bị AUDIT,lật base-role và base-role đã có của người khác trước đó mọi người đều biết.
+                Nếu base-role =  mũ trắng, INSPECTOR mất toàn bộ bài trên tay,
+                Nếu base-role =  mũ đen hoặc xám, INSPECTOR sở hữu toàn bộ bài trên người này, continue sang người chơi khác
+            + Nếu không bị AUDIT, bài của người đó bị thu hồi về chồng bài used, Lật base-role và base-role đã có của người khác trước đó. Hiển thị lên khu vực chung , continue sang người chơi khác
+
+
+    - HÀNH ĐỘNG: ACTION với bản thân, các người chơi khác và server  (-1 Năng lượng mỗi action) 
+        Khi hết năng lượng thì không thể ACTION.
+        Nếu bị Audit, không thể ACTION úp.
+
+        Với server:
+            - tấn công ngửa
+                Nếu ATTACK có hiệu lực
+                    chờ X giây để người chơi khác action RÚT ĐIỆN, 
+                        không ai RÚT ĐIỆN, thì server -1 Máu
+                        có người Rút điện: UNACTIVE lá attack, cho vào chồng bài used
+                Nếu ATTACK ko có hiệu lực: 
+                    UNACTIVE lá attack.
+            - tấn công úp: thêm lá đó vào array của server
+            - Nâng cấp: đẩy vào PAYLOAD ZONE
+
+    - Nhận thưởng: Nhận thưởng từ các trường hợp:
+        + hạ gục trực tiếp server
+            - Nhận REWARD(Phần thưởng) là 1 trong các lá của SERVER
+        + hạ gục trực tiếp người chơi (Lấy toàn bộ bài của người chơi đó kể cả base-role, không thể lật base-role cho người khác thấy). Sở hữu toàn bộ bài của người chơi đó trong các lượt sau. 
+    - BỎ BÀI: Chủ động bỏ bài trên tay, không bắt buộc
+    - HẾT LƯỢT 
+
+    1 Phase INSPECTOR gồm:
+    - BỐC BÀI: Nếu số bài trên tay < Năng lượng tối đa : + 2 Lá
+    - CHUẨN BỊ: ACTION trước khi giải mã chỉ với bản thân (-1 Năng lượng mỗi action)
+    - GIẢI MÃ: Lật các lá úp trước mặt, nếu tổng DEFEND >= tổng ATTACK có hiệu lực( ATTACK có điểm > TECH LEVEL) không bị trừ Máu , DEFEND < tổng ATTACK : -1 Máu
+    - RÚT LÁ AUDIT nếu lá AUDIT đang ở trước mặt 1 người, is_audit của người đó chuyển thành FALSE
+    - HÀNH ĐỘNG: ACTION với bản thân, các người chơi khác và server  (-1 Năng lượng mỗi action) 
+        Khi hết năng lượng thì không thể ACTION.
+        -1 năng lượng để AUDIT 1 người chơi khác, is_audit của người đó chuyển thành TRUE, không thể AUDIT 1 người chơi 2 lượt liên tiếp.
+    - Nhận thưởng: Nhận thưởng từ các trường hợp:
+        + hạ gục server
+        + hạ gục người chơi
+    - BỎ BÀI: Chủ động bỏ bài trên tay, không bắt buộc
+    - HẾT LƯỢT 
+
+    1 Phase SERVER CHECK tổng kết(khi hết người cuối cùng trong 1 round):
+    - XÁO LÁ ÚP trong PAYLOAD ZONE
+    - GIẢI MÃ: Lật toàn bộ bài 
+        - Nếu có lá rút điện, toàn bộ các lá này đưa vào chồng bài used
+        : trừ Máu bằng MAX(số lá ATTACK có hiệu lực - số lá DEFEND, 0)
+        Nếu máu <= 0 tại pha này, toàn bộ người chơi + 2 lá, Hồi đầy máu max
+    - NÂNG CẤP: Trang bị các lá NÂNG CẤP trong PAYLOAD ZONE
+
+
+    END ROUND, START ROUND mới
+
+
+Các lá bài có trạng thái:
+ACTION:
+- NEW (trong chồng bài BỐC)
+- đã bị sở hữu bởi
+- ACTION úp
+- ACTION ngửa
+- ACTIVE
+- UN-ACTIVE (chuyển về chồng bài used)
+
+KIT:
+- NEW (trong chồng bài BỐC)
+- đã bị sở hữu bởi
+- ACTIVE
+- UN-ACTIVE  (chuyển về chồng bài used)
+
+Có thuộc tính:
+- Tên
+- Giải thích
+- TYPE: 
+- KHUNG (TEMPLATE)
+- Thông Số Hiển thị
+- IMAGE
+
+
+Khi chồng bài bốc hết thì chuyển toàn bộ lá từ chồng bài used (UN-ACTIVE) sang chồng bài bốc (NEW).
+
+Ghi chú:
+- Một người chơi chỉ bị giới hạn bởi năng lượng, không giới hạn số lượt ATTACK của người chơi trong 1 Phase
+- Không giới hạn số lượng lá trên tay nhưng nếu số lá > số năng lượng hiện có thì không được bốc thêm ở lượt BỐC BÀI
+- 
+
+PERSONA:

@@ -1,0 +1,94 @@
+.action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--panel);
+  border-top: 1.5px solid var(--border-strong);
+  min-height: 3.2rem;
+}
+
+.action-bar__hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.action-bar__hint-chip {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+}
+
+.action-bar__quick-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.action-bar__not-your-turn {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.action-bar__builder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+}
+.action-bar__builder-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.action-bar__label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.action-bar__note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.action-bar__card-picker {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.action-bar__table-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.action-bar__table-card-owner {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  max-width: 5.5rem;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-bar__select {
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-family: var(--font-body);
+}

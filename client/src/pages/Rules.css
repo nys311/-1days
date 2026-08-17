@@ -1,0 +1,132 @@
+.rules-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.rules-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  padding: 0.5rem 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+}
+.rules-page__header h1 {
+  font-family: var(--font-display);
+  color: var(--accent);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.rules-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.rules-section h2 {
+  font-family: var(--font-display);
+  color: var(--text);
+  border-left: 4px solid var(--accent);
+  padding-left: 0.6rem;
+  margin: 0;
+}
+.rules-section h3 {
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  margin: 0.5rem 0 0;
+}
+.rules-section p {
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.rules-section code {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 0.35rem;
+  font-family: var(--font-mono);
+}
+.rules-note {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-left: 1.2rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.rules-phase-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1.3rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.rules-phase-list strong {
+  color: var(--accent);
+}
+
+.rules-table-scroll {
+  overflow-x: auto;
+}
+
+.rules-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.rules-table th,
+.rules-table td {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.rules-table th {
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: var(--letter-spacing-wide);
+}
+.rules-table td {
+  color: var(--text-muted);
+}
+.rules-table--compact td,
+.rules-table--compact th {
+  padding: 0.35rem 0.6rem;
+}
+
+.rules-role-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text) !important;
+  font-weight: 600;
+}
+.rules-role-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.rules-quote {
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}

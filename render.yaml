@@ -1,0 +1,95 @@
+# Render Blueprint — see README.md "Deploy to Render" for the exact first-deploy wiring steps
+# (the *_URL env vars below are left blank on purpose: Render assigns each service's public URL
+# only after its first deploy, so you fill them in and redeploy once — see README).
+databases:
+  - name: minus1days-db
+    plan: free
+    databaseName: minus1days
+    user: minus1days
+
+services:
+  - type: web
+    name: minus1days-engine
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build -w @minus1days/shared && npm run build -w @minus1days/engine
+    startCommand: npm run start -w @minus1days/engine
+    envVars:
+      - key: REACTION_WINDOW_MS
+        value: "10000"
+
+  - type: web
+    name: minus1days-matchmaking
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build -w @minus1days/shared && npm run build -w @minus1days/db && npm run build -w @minus1days/matchmaking
+    startCommand: npm run migrate:deploy -w @minus1days/db && npm run start -w @minus1days/matchmaking
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: minus1days-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SELF_URL
+        sync: false # this service's own public Render URL, filled in after first deploy
+      - key: ENGINE_URL
+        sync: false # minus1days-engine's public Render URL
+      - key: GATEWAY_URL
+        sync: false # minus1days-gateway's public Render URL
+      - key: BOTS_URL
+        sync: false # minus1days-bots's public Render URL
+
+  - type: web
+    name: minus1days-gateway
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build -w @minus1days/shared && npm run build -w @minus1days/gateway
+    startCommand: npm run start -w @minus1days/gateway
+    envVars:
+      - key: JWT_SECRET
+        sync: false # must match matchmaking's + auth's JWT_SECRET exactly
+      - key: SELF_URL
+        sync: false
+      - key: ENGINE_URL
+        sync: false
+      - key: MATCHMAKING_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false # the deployed client's origin, e.g. https://minus1days-client.onrender.com
+
+  - type: web
+    name: minus1days-bots
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build -w @minus1days/shared && npm run build -w @minus1days/bots
+    startCommand: npm run start -w @minus1days/bots
+
+  - type: web
+    name: minus1days-auth
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build -w @minus1days/shared && npm run build -w @minus1days/db && npm run build -w @minus1days/auth
+    startCommand: npm run start -w @minus1days/auth
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: minus1days-db
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false # must match matchmaking's + gateway's JWT_SECRET exactly
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+
+  - type: web
+    name: minus1days-client
+    runtime: static
+    buildCommand: npm install && npm run build -w @minus1days/shared && npm run build -w client
+    staticPublishPath: client/dist
+    envVars:
+      - key: VITE_GATEWAY_URL
+        sync: false
+      - key: VITE_AUTH_URL
+        sync: false
+      - key: VITE_GOOGLE_CLIENT_ID
+        sync: false

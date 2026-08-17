@@ -1,0 +1,76 @@
+// Single shared Postgres schema for the two services that need durable storage:
+// `auth` (User, UserStats) and `matchmaking` (Room, MatchHistory, MatchParticipant).
+// Live gameplay state stays in the Engine service's memory — this DB only stores
+// accounts and finished-match records, never per-action game state.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String             @id @default(uuid())
+  googleSub    String             @unique
+  email        String             @unique
+  displayName  String
+  avatarUrl    String?
+  createdAt    DateTime           @default(now())
+  lastLoginAt  DateTime           @updatedAt
+  stats        UserStats?
+  participants MatchParticipant[]
+}
+
+model UserStats {
+  userId      String @id
+  user        User   @relation(fields: [userId], references: [id])
+  gamesPlayed Int    @default(0)
+  wins        Int    @default(0)
+  losses      Int    @default(0)
+}
+
+enum RoomStatus {
+  LOBBY
+  PLAYING
+  FINISHED
+  ABANDONED
+}
+
+model Room {
+  id           String        @id @default(uuid())
+  code         String        @unique
+  maxPlayers   Int
+  hostUserId   String
+  status       RoomStatus    @default(LOBBY)
+  createdAt    DateTime      @default(now())
+  startedAt    DateTime?
+  endedAt      DateTime?
+  matchHistory MatchHistory?
+}
+
+model MatchHistory {
+  id            String             @id @default(uuid())
+  roomId        String             @unique
+  room          Room               @relation(fields: [roomId], references: [id])
+  winnerFaction String?
+  startedAt     DateTime
+  endedAt       DateTime
+  participants  MatchParticipant[]
+}
+
+model MatchParticipant {
+  id        String       @id @default(uuid())
+  matchId   String
+  match     MatchHistory @relation(fields: [matchId], references: [id])
+  userId    String?
+  user      User?        @relation(fields: [userId], references: [id])
+  seatIndex Int
+  seatKind  String
+  botLevel  String?
+  baseRole  String?
+  personaId String?
+  result    String // "WIN" | "LOSS"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "minus1-days",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "shared",
+    "db",
+    "services/*",
+    "client"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n ENGINE,MATCH,GATE,BOTS,CLIENT -c blue,magenta,green,yellow,cyan \"npm:dev:engine\" \"npm:dev:matchmaking\" \"npm:dev:gateway\" \"npm:dev:bots\" \"npm:dev:client\"",
+    "dev:engine": "npm run dev -w @minus1days/engine",
+    "dev:matchmaking": "npm run dev -w @minus1days/matchmaking",
+    "dev:gateway": "npm run dev -w @minus1days/gateway",
+    "dev:bots": "npm run dev -w @minus1days/bots",
+    "dev:client": "npm run dev -w client",
+    "build": "npm run build -w shared && npm run build -w @minus1days/db && npm run build -w @minus1days/engine && npm run build -w @minus1days/matchmaking && npm run build -w @minus1days/gateway && npm run build -w @minus1days/bots && npm run build -w @minus1days/auth && npm run build -w client",
+    "build:shared": "npm run build -w shared",
+    "gen:assets": "node scripts/generate-assets.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

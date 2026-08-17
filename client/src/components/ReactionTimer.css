@@ -1,0 +1,94 @@
+.reaction-timer {
+  position: fixed;
+  bottom: 190px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 400;
+  width: min(92vw, 460px);
+  background: var(--panel);
+  border: 1.5px solid var(--danger);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.45), 0 0 calc(20px * var(--glow-strength)) var(--danger);
+}
+
+.reaction-timer--urgent {
+  animation: reaction-shake 0.4s ease-in-out infinite;
+}
+@keyframes reaction-shake {
+  0%,
+  100% {
+    transform: translateX(-50%);
+  }
+  25% {
+    transform: translateX(calc(-50% - 3px));
+  }
+  75% {
+    transform: translateX(calc(-50% + 3px));
+  }
+}
+
+.reaction-timer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.reaction-timer__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--danger);
+  font-size: 0.85rem;
+  letter-spacing: var(--letter-spacing-wide);
+}
+.reaction-timer__seconds {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.reaction-timer__bar-track {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--bg-elevated);
+  overflow: hidden;
+  margin: 0.35rem 0;
+}
+.reaction-timer__bar-fill {
+  height: 100%;
+  background: var(--danger);
+  transition: width 0.1s linear;
+}
+
+.reaction-timer__desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+}
+
+.reaction-timer__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.reaction-timer__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.reaction-timer__group-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--text-dim);
+}
+.reaction-timer__cards {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.reaction-timer__none {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-style: italic;
+}

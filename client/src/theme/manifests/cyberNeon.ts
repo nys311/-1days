@@ -1,0 +1,66 @@
+import type { ThemeManifest } from "../types";
+
+// "Cyber Neon" — dark neon hacker aesthetic: near-black background, magenta/cyan/green
+// neon accents, soft glow effects, glitchy flair on emphasis elements.
+export const cyberNeonTheme: ThemeManifest = {
+  id: "cyber-neon",
+  name: "Cyber Neon",
+  description: "Nền tối, neon magenta/cyan, cảm giác hacker underground.",
+  vars: {
+    bg: "#0a0b12",
+    bgElevated: "#11131e",
+    panel: "#161a29",
+    border: "#2a2f45",
+    borderStrong: "#3d4568",
+    text: "#eef1ff",
+    textMuted: "#9aa3c7",
+    textDim: "#5c6488",
+    accent: "#00f6ff",
+    accentSoft: "#0b3a44",
+    danger: "#ff2e6d",
+    success: "#39ff8a",
+    warning: "#ffc857",
+    gold: "#ffd166",
+    overlay: "rgba(6, 7, 14, 0.72)",
+    shadowColor: "rgba(0, 246, 255, 0.25)",
+
+    fontDisplay: '"Orbitron", "Rajdhani", "Segoe UI", sans-serif',
+    fontBody: '"Rajdhani", "Segoe UI", sans-serif',
+    fontMono: '"Share Tech Mono", "Consolas", monospace',
+    letterSpacingWide: "0.08em",
+
+    cardRadius: "12px",
+    cardbackBg: "linear-gradient(160deg, #0d0f1c 0%, #1a1030 60%, #0d0f1c 100%)",
+    cardbackLine: "rgba(0, 246, 255, 0.35)",
+    cardbackBorder: "#00f6ff",
+    frameBg: "linear-gradient(165deg, #141726 0%, #1c2036 100%)",
+    frameBorder: "#3d4568",
+
+    typeBaseRole: "#ff2e6d",
+    typePersona: "#00f6ff",
+    typeAction: "#a259ff",
+    typeKit: "#39ff8a",
+    typeFlag: "#ffd166",
+    typeToken: "#ff8a3d",
+
+    subAttack: "#ff3b3b",
+    subDefend: "#2ea6ff",
+    subDeny: "#ffe14d",
+    subLucky: "#39ff8a",
+    subPhishing: "#ff7ae0",
+    subRansomware: "#ff2e6d",
+    subZeroday: "#a259ff",
+    subBitcoin: "#ffd166",
+    subIncidentResponse: "#39ff8a",
+    subKernCoerce: "#ff8a3d",
+    subKernBadLuck: "#8a8fb8",
+    subKernCaesar: "#ffd166",
+    subEnergyDrink: "#39ff8a",
+    subUpgrade: "#00f6ff",
+    subKernSuperUpgrade: "#ffd166",
+
+    scanlineOpacity: "0",
+    glitchOpacity: "1",
+    glowStrength: "1",
+  },
+};
