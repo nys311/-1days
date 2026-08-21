@@ -80,7 +80,7 @@ io.on("connection", (socket: Socket) => {
   const user = (socket.data as { user: AppTokenPayload }).user;
   const token = socket.handshake.auth.token as string;
 
-  socket.on(SOCKET_EVENTS.QUICK_JOIN, async (payload: { displayName?: string }) => {
+  socket.on(SOCKET_EVENTS.QUICK_JOIN, async (payload: { displayName?: string }, ack?: (res: unknown) => void) => {
     try {
       const result = await forwardJson("/queue/join", env.MATCHMAKING_URL, token, "POST", {
         displayName: payload?.displayName || user.displayName,
@@ -88,12 +88,14 @@ io.on("connection", (socket: Socket) => {
       attachSocketToRoom(socket.id, result.roomId, result.playerId);
       socket.join(`room:${result.roomId}`);
       await pushLobbyState(result.roomId);
+      ack?.(result);
     } catch (err) {
       sendError(socket, "quick_join_failed", (err as Error).message);
+      ack?.(undefined);
     }
   });
 
-  socket.on(SOCKET_EVENTS.CREATE_ROOM, async (payload: { displayName?: string; maxPlayers: number }) => {
+  socket.on(SOCKET_EVENTS.CREATE_ROOM, async (payload: { displayName?: string; maxPlayers: number }, ack?: (res: unknown) => void) => {
     try {
       const result = await forwardJson("/rooms", env.MATCHMAKING_URL, token, "POST", {
         displayName: payload?.displayName || user.displayName,
@@ -102,12 +104,14 @@ io.on("connection", (socket: Socket) => {
       attachSocketToRoom(socket.id, result.roomId, result.playerId);
       socket.join(`room:${result.roomId}`);
       await pushLobbyState(result.roomId);
+      ack?.(result);
     } catch (err) {
       sendError(socket, "create_room_failed", (err as Error).message);
+      ack?.(undefined);
     }
   });
 
-  socket.on(SOCKET_EVENTS.JOIN_ROOM, async (payload: { displayName?: string; code: string }) => {
+  socket.on(SOCKET_EVENTS.JOIN_ROOM, async (payload: { displayName?: string; code: string }, ack?: (res: unknown) => void) => {
     try {
       const result = await forwardJson(`/rooms/${payload.code}/join`, env.MATCHMAKING_URL, token, "POST", {
         displayName: payload?.displayName || user.displayName,
@@ -115,8 +119,10 @@ io.on("connection", (socket: Socket) => {
       attachSocketToRoom(socket.id, result.roomId, result.playerId);
       socket.join(`room:${result.roomId}`);
       await pushLobbyState(result.roomId);
+      ack?.(result);
     } catch (err) {
       sendError(socket, "join_room_failed", (err as Error).message);
+      ack?.(undefined);
     }
   });
 
