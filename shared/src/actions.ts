@@ -20,8 +20,7 @@ export interface TuringPeekAction {
 export type PlayTarget =
   | { kind: "SELF" }
   | { kind: "PLAYER"; playerId: string }
-  | { kind: "SERVER" }
-  | { kind: "KERN" };
+  | { kind: "SERVER" }; // the shared table-center object — SERVER and THE KERN are the same target
 
 export interface PlayCardAction {
   type: "PLAY_CARD"; // Hanh dong: main action phase play

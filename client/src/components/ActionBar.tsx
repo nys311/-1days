@@ -150,10 +150,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({
                     Người chơi khác…
                   </button>
                   <button className="btn btn--sm" onClick={() => composer.confirmTarget({ kind: "SERVER" })}>
-                    Server
-                  </button>
-                  <button className="btn btn--sm" onClick={() => composer.confirmTarget({ kind: "KERN" })}>
-                    THE KERN
+                    Server / THE KERN
                   </button>
                 </div>
               </>

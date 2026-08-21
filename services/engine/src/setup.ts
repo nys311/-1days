@@ -27,8 +27,13 @@ export function createInitialState(roomId: string, players: EngineCreateGameRequ
 
   const drawPile = buildFreshDrawPile();
   const usedPile: GameState["usedPile"] = [];
-  const kern = { stack: buildKernStack(), claimed: [] };
-  const server = { hp: 10, maxHp: 10, zone: drawCards(drawPile, usedPile, 6) };
+  const server = {
+    hp: 10,
+    maxHp: 10,
+    zone: drawCards(drawPile, usedPile, 6),
+    lootStack: buildKernStack(),
+    lootClaimed: [] as CardInstance[],
+  };
   server.zone.forEach((c) => (c.location = CardLocation.SERVER_ZONE));
 
   const playerStates: PlayerState[] = players.map((p, i) => {
@@ -73,7 +78,6 @@ export function createInitialState(roomId: string, players: EngineCreateGameRequ
     round: 1,
     phase: RoundPhase.DRAW,
     server,
-    kern,
     drawPile,
     usedPile,
     pendingReaction: null,

@@ -71,10 +71,8 @@ export function buildPlayerView(state: GameState, viewerId: string): PlayerView 
       hp: state.server.hp,
       maxHp: state.server.maxHp,
       zone: state.server.zone.map((c) => visibleCard(c, viewerId, null)),
-    },
-    kern: {
-      remaining: state.kern.stack.length,
-      claimed: state.kern.claimed.map((c) => visibleCard(c, viewerId, c.ownerId ?? null)),
+      lootRemaining: state.server.lootStack.length,
+      lootClaimed: state.server.lootClaimed.map((c) => visibleCard(c, viewerId, c.ownerId ?? null)),
     },
     drawPileCount: state.drawPile.length,
     usedPileCount: state.usedPile.length,

@@ -5,8 +5,8 @@ import { computeSeatPositions } from "../lib/seatLayout";
 import { useActionComposer } from "../lib/useActionComposer";
 import { sendAction } from "../lib/socket";
 import { PlayerSeat } from "../components/PlayerSeat";
-import { KernZone } from "../components/KernZone";
 import { ServerZone } from "../components/ServerZone";
+import { DeckPiles } from "../components/DeckPiles";
 import { HandZone } from "../components/HandZone";
 import { ActionBar } from "../components/ActionBar";
 import { ReactionTimer } from "../components/ReactionTimer";
@@ -106,18 +106,13 @@ export const TablePage: React.FC = () => {
 
       <div className="table-page__board">
         <div className="table-page__center">
-          <KernZone
-            kern={playerView.kern}
-            targetable={awaitingZoneTarget}
-            onSelectTarget={() => composer.confirmTarget({ kind: "KERN" })}
-            onInspectCard={setModalDefId}
-          />
           <ServerZone
             server={playerView.server}
             targetable={awaitingZoneTarget}
             onSelectTarget={() => composer.confirmTarget({ kind: "SERVER" })}
             onInspectCard={setModalDefId}
           />
+          <DeckPiles drawPileCount={playerView.drawPileCount} usedPileCount={playerView.usedPileCount} />
         </div>
 
         {playerView.players.map((p) => {

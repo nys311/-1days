@@ -19,8 +19,7 @@ function nameOf(players: VisiblePlayer[], id: string | null): string {
 }
 
 const KIND_LABEL: Record<string, string> = {
-  SERVER_ATTACK: "tấn công SERVER",
-  KERN_ATTACK: "tấn công THE KERN",
+  SERVER_ATTACK: "tấn công SERVER / THE KERN",
   PLAYER_ATTACK: "tấn công người chơi",
 };
 

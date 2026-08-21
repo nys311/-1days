@@ -37,7 +37,7 @@ export const RulesPage: React.FC = () => {
           <strong>-1 DAYS</strong> là board game chủ đề an ninh mạng cho 2-8 người chơi với bộ luật riêng. Mỗi người có
           một <strong>Base Role</strong> (vai trò ẩn) và một <strong>PERSONA</strong>{" "}
           (nhân cách, luôn công khai) quyết định chỉ số và năng lực đặc biệt. Ván đấu xoay quanh việc bảo vệ/tấn công{" "}
-          <strong>SERVER</strong> và <strong>THE KERN</strong> ở giữa bàn.
+          <strong>SERVER / THE KERN</strong> ở giữa bàn — cùng một đối tượng, xem mục 5.
         </p>
         <table className="rules-table">
           <thead>
@@ -200,14 +200,18 @@ export const RulesPage: React.FC = () => {
       </section>
 
       <section className="rules-section">
-        <h2>5. THE KERN &amp; SERVER</h2>
+        <h2>5. SERVER &amp; THE KERN (cùng 1 mục tiêu)</h2>
         <p>
-          <strong>SERVER</strong> có HP riêng và một khu vực chứa các lá tấn công úp chờ xử lý. Tấn công ngửa vào
-          SERVER mở ra cửa sổ phản ứng RÚT ĐIỆN; nếu không ai chặn, SERVER mất 1 Máu.
+          <strong>SERVER</strong> và <strong>THE KERN</strong> là <strong>cùng một đối tượng</strong> ở giữa bàn —
+          không phải hai mục tiêu riêng. SERVER có HP riêng (mặc định 10) và một khu vực chứa các lá tấn công úp chờ
+          xử lý; THE KERN là chồng lá "kho báu" ẩn giấu bên trong nó.
         </p>
         <p>
-          <strong>THE KERN</strong> là mục tiêu tối thượng của Black Hat: một chồng 6 lá được xáo ngẫu nhiên, gồm:
+          Tấn công ngửa vào SERVER/THE KERN mở ra cửa sổ phản ứng RÚT ĐIỆN; nếu không ai chặn: SERVER mất 1 Máu{" "}
+          <strong>và</strong> 1 lá được rút từ chồng kho báu bên trong (nếu còn) cho người tấn công — trúng lá đặc
+          biệt thì được thêm vào tay để dùng sau, trúng FLAG thì <strong>Black Hat thắng ngay lập tức</strong>.
         </p>
+        <p>Chồng kho báu (THE KERN) gồm 6 lá được xáo ngẫu nhiên:</p>
         <ul className="rules-list">
           {KERN_STACK_DEF_IDS.map((id) => {
             const def = getCardDef(id);
@@ -219,7 +223,8 @@ export const RulesPage: React.FC = () => {
           })}
         </ul>
         <p className="rules-note">
-          Nếu Black Hat lấy được 1 trong 2 lá FLAG khi tấn công THE KERN thành công → Black Hat thắng ngay lập tức.
+          Tấn công úp vào SERVER chỉ tích lũy vào SERVER CHECK cuối vòng (trừ HP theo số lá), không rút kho báu — chỉ
+          tấn công ngửa không bị chặn mới có cơ hội trúng kho báu.
         </p>
       </section>
 

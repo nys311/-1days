@@ -38,6 +38,13 @@
   width: 18px;
   height: 18px;
 }
+.server-zone__title-icon--kern {
+  color: var(--type-flag);
+}
+.server-zone__title-sep {
+  color: var(--text-dim);
+  font-weight: 400;
+}
 
 .server-zone__hp {
   display: flex;
@@ -63,6 +70,61 @@
   font-size: 0.72rem;
   color: var(--text-muted);
   white-space: nowrap;
+}
+
+.server-zone__loot {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.server-zone__loot-stack {
+  position: relative;
+  width: 56px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.server-zone__loot-stack-card {
+  position: absolute;
+  width: 40px;
+  height: 56px;
+  border-radius: 6px;
+  background: var(--cardback-bg);
+  border: 1.5px solid var(--type-flag);
+  top: calc(var(--i) * -3px);
+  left: calc(var(--i) * 2px);
+}
+.server-zone__loot-count {
+  position: relative;
+  z-index: 10;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text);
+  text-shadow: 0 0 8px var(--shadow-color);
+}
+.server-zone__loot-empty {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+.server-zone__claimed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.server-zone__claimed-label {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+.server-zone__claimed-cards {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .server-zone__cards {

@@ -11,7 +11,6 @@ export type {
   PersonaStats,
   PlayerState,
   ServerState,
-  KernState,
   Winner,
   PendingReaction,
   GameState,

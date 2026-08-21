@@ -53,14 +53,15 @@ export interface PlayerView {
   phase: string;
   currentPlayerId: string | null;
   players: VisiblePlayer[];
-  server: { hp: number; maxHp: number; zone: VisibleCard[] };
-  kern: { remaining: number; claimed: VisibleCard[] };
+  // SERVER and THE KERN are the same object: `lootRemaining`/`lootClaimed` are the Kern's
+  // hidden cache (2 FLAG + 4 special cards) living inside it.
+  server: { hp: number; maxHp: number; zone: VisibleCard[]; lootRemaining: number; lootClaimed: VisibleCard[] };
   drawPileCount: number;
   usedPileCount: number;
   pendingReaction:
     | {
         id: string;
-        kind: "SERVER_ATTACK" | "KERN_ATTACK" | "PLAYER_ATTACK";
+        kind: "SERVER_ATTACK" | "PLAYER_ATTACK";
         attackerId: string;
         targetId: string | null;
         deadlineMs: number;

@@ -98,14 +98,10 @@ export function resolveReactionNow(state: GameState, log: (m: string) => void) {
   } else if (reaction.kind === "SERVER_ATTACK") {
     state.server.hp = Math.max(0, state.server.hp - dmg);
     log(`SERVER mất ${dmg} Máu (còn ${state.server.hp}).`);
-    if (state.server.hp <= 0 && attacker) {
-      const reward = state.server.zone.pop();
-      if (reward) {
-        reward.location = CardLocation.HAND;
-        reward.ownerId = attacker.id;
-        attacker.hand.push(reward);
-        log(`${attacker.displayName} hạ gục SERVER, nhận 1 lá thưởng.`);
-      }
+    // SERVER and THE KERN are the same object — every unblocked hit also cracks loose 1 loot
+    // card from its hidden Kern cache for the attacker (a FLAG there is Black Hat's real win).
+    if (attacker) claimTopKernCard(state, attacker.id, log);
+    if (state.server.hp <= 0) {
       state.server.hp = state.server.maxHp;
       state.players.forEach((p) => {
         if (p.status === PlayerStatus.ALIVE) {
@@ -119,7 +115,5 @@ export function resolveReactionNow(state: GameState, log: (m: string) => void) {
       });
       log("SERVER được hồi đầy Máu, mọi người +2 lá.");
     }
-  } else if (reaction.kind === "KERN_ATTACK") {
-    claimTopKernCard(state, reaction.attackerId, log);
   }
 }

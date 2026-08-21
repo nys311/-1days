@@ -18,10 +18,11 @@ export const RandomBot: BotStrategy = {
       const attacks = handCardsOfSubtype(my.hand, ActionSubtype.ATTACK);
       const targets = otherAlivePlayers(view, myPlayerId);
 
-      // Black Hat's actual win condition is claiming a FLAG from THE KERN — attempt it sometimes.
-      if (my.baseRole === "BLACKHAT" && attacks.length > 0 && my.energy > 0 && view.kern.remaining > 0 && Math.random() < 0.3) {
+      // SERVER and THE KERN are the same target — every unblocked hit against it also cracks a
+      // loot card loose, which is Black Hat's actual win condition, so attempt it sometimes.
+      if (my.baseRole === "BLACKHAT" && attacks.length > 0 && my.energy > 0 && view.server.lootRemaining > 0 && Math.random() < 0.3) {
         const card = attacks[Math.floor(Math.random() * attacks.length)];
-        return { type: "PLAY_CARD", cardInstanceId: card.instanceId!, faceUp: true, target: { kind: "KERN" } };
+        return { type: "PLAY_CARD", cardInstanceId: card.instanceId!, faceUp: true, target: { kind: "SERVER" } };
       }
 
       if (attacks.length > 0 && my.energy > 0 && targets.length > 0 && Math.random() < 0.7) {

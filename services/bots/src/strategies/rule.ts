@@ -25,13 +25,14 @@ export const RuleBot: BotStrategy = {
       const attacks = handCardsOfSubtype(my.hand, ActionSubtype.ATTACK);
       const targets = otherAlivePlayers(view, myPlayerId).sort((a, b) => a.hp - b.hp);
 
-      // Black Hat's actual win condition is claiming a FLAG from THE KERN — go for it often.
-      if (my.baseRole === "BLACKHAT" && attacks.length > 0 && my.energy > 0 && view.kern.remaining > 0 && Math.random() < 0.5) {
+      // SERVER and THE KERN are the same target — every unblocked hit against it also cracks a
+      // loot card loose, which is Black Hat's actual win condition, so go after it often.
+      if (my.baseRole === "BLACKHAT" && attacks.length > 0 && my.energy > 0 && view.server.lootRemaining > 0 && Math.random() < 0.5) {
         return {
           type: "PLAY_CARD",
           cardInstanceId: strongestAttack(attacks).instanceId!,
           faceUp: true,
-          target: { kind: "KERN" },
+          target: { kind: "SERVER" },
         };
       }
 
@@ -64,7 +65,7 @@ export const RuleBot: BotStrategy = {
     if (reaction.targetId === myPlayerId && defends.length > 0) {
       return { type: "REACT_DEFEND", reactionId: reaction.id, cardInstanceId: defends[0].instanceId! };
     }
-    if ((reaction.kind === "SERVER_ATTACK" || reaction.kind === "KERN_ATTACK") && denies.length > 0) {
+    if (reaction.kind === "SERVER_ATTACK" && denies.length > 0) {
       return { type: "REACT_DENY", reactionId: reaction.id, cardInstanceId: denies[0].instanceId! };
     }
     return null;

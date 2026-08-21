@@ -163,15 +163,19 @@ export interface PlayerState {
   connected: boolean;
 }
 
+/**
+ * SERVER and THE KERN are the same shared table-center object, not two separate targets —
+ * "SERVER" is the mechanical name (HP, queued attacks); "THE KERN" is the hidden loot cache
+ * inside it (2 FLAG + 4 special cards). Every unblocked face-up attack against it both damages
+ * its HP and cracks one loot card loose for the attacker; drawing a FLAG this way is Black Hat's
+ * actual win condition.
+ */
 export interface ServerState {
   hp: number;
   maxHp: number;
-  zone: CardInstance[]; // face-down attack cards queued against the server
-}
-
-export interface KernState {
-  stack: CardInstance[]; // remaining shuffled cards, index 0 = top
-  claimed: CardInstance[];
+  zone: CardInstance[]; // face-down attack cards queued against it
+  lootStack: CardInstance[]; // remaining shuffled Kern cards, index 0 = top
+  lootClaimed: CardInstance[];
 }
 
 export type Winner =
@@ -182,9 +186,9 @@ export type Winner =
 
 export interface PendingReaction {
   id: string;
-  kind: "SERVER_ATTACK" | "KERN_ATTACK" | "PLAYER_ATTACK";
+  kind: "SERVER_ATTACK" | "PLAYER_ATTACK";
   attackerId: string;
-  targetId: string | null; // null for server/kern
+  targetId: string | null; // null for the server/kern
   attackCardInstanceId: string;
   attackDefId: string;
   totalAttackValue: number;
@@ -202,7 +206,6 @@ export interface GameState {
   round: number;
   phase: RoundPhase | ServerCheckStep | "LOBBY" | "GAME_OVER";
   server: ServerState;
-  kern: KernState;
   drawPile: CardInstance[];
   usedPile: CardInstance[];
   pendingReaction: PendingReaction | null;

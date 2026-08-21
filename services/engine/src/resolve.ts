@@ -325,21 +325,6 @@ function handleAttack(
     return;
   }
 
-  if (target.kind === "KERN") {
-    if (!faceUp) throw new RuleError("Chỉ có thể tấn công THE KERN bằng lá ngửa.");
-    createReaction(state, {
-      kind: "KERN_ATTACK",
-      attackerId: player.id,
-      targetId: null,
-      attackCard: card,
-      totalAttackValue: value,
-      allowDefend: true,
-      windowMs: env.REACTION_WINDOW_MS,
-    });
-    log(`${player.displayName} tấn công THE KERN (điểm ${value}) — chờ phản ứng.`);
-    return;
-  }
-
   throw new RuleError("Mục tiêu không hợp lệ cho tấn công.");
 }
 

@@ -87,11 +87,16 @@ engine hay gateway.
 
 ## 5. Các quyết định/diễn giải luật (do luật gốc chưa mô tả hết chi tiết vận hành)
 
-- **THE KERN**: luật gốc mô tả nội dung (2 FLAG + 4 lá đặc biệt) nhưng không mô tả cách tương
-  tác. Engine mô phỏng giống hệt cơ chế tấn công SERVER đã được mô tả rõ: Black Hat "tấn công"
-  Kern bằng 1 lá ATTACK ngửa, mở cửa sổ phản ứng (DEFEND/DENY), nếu không bị chặn thì rút lá trên
-  cùng của chồng Kern (đã xáo lúc setup) — FLAG thì Black Hat thắng ngay, lá khác thì được nhận
-  vào tay để dùng sau.
+- **THE KERN = SERVER (cùng 1 đối tượng)**: xác nhận lại bởi chính người thiết kế — ban đầu engine
+  từng mô hình hoá 2 mục tiêu tách biệt (SERVER có HP, KERN có chồng 6 lá riêng với reaction kind
+  riêng `KERN_ATTACK`), đã **gộp lại thành một**. `GameState.server` giờ mang cả hai vai trò:
+  `hp`/`zone` (như trước) cộng thêm `lootStack`/`lootClaimed` (chồng 6 lá của Kern — 2 FLAG + 4
+  đặc biệt — nằm "bên trong" nó). Mọi lá ATTACK ngửa không bị chặn nhắm vào SERVER giờ gây ra CẢ
+  HAI hiệu ứng cùng lúc trong 1 lần đánh: -1 (hoặc -2 với Kevin) Máu SERVER, **và** rút 1 lá từ
+  `lootStack` cho người tấn công — trúng FLAG thì Black Hat thắng ngay, trúng lá khác thì được
+  nhận vào tay. `PlayTarget` không còn `{kind:"KERN"}` riêng — chỉ còn `{kind:"SERVER"}`.
+  Tấn công úp vào SERVER (queued, tính ở SERVER CHECK cuối round) không rút loot, chỉ tính vào
+  công thức đếm-lá cuối round — rút loot chỉ xảy ra qua đường tấn công ngửa tức thời.
 - **Audit**: mô hình hoá bằng 1 cờ `is_audit` trên người chơi + `lastAuditTargetId` (chống nhắm
   lại người vừa audit lượt trước), thay vì di chuyển vật lý lá "Audit" — lá Audit vẫn nằm im
   trong tay INSPECTOR như một thẻ nhắc, không có tác dụng cơ học riêng ngoài việc đánh dấu họ có

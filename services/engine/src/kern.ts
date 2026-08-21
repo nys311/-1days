@@ -2,12 +2,14 @@ import { CardFace, CardLocation, CardType, GameState, getCardDef } from "@minus1
 import { checkFlagCapture } from "./win";
 import { getPlayer } from "./util";
 
-/** Resolves an unblocked attack against THE KERN: reveal the top card and apply its effect. */
+/**
+ * Every unblocked face-up attack against the SERVER cracks loose one card from its hidden Kern
+ * loot cache, in addition to the HP damage it deals — SERVER and THE KERN are the same object.
+ */
 export function claimTopKernCard(state: GameState, claimerId: string, log: (m: string) => void) {
-  const card = state.kern.stack.shift();
+  const card = state.server.lootStack.shift();
   if (!card) {
-    log("THE KERN đã trống.");
-    return;
+    return; // loot cache already emptied out — attack still lands as plain SERVER damage
   }
   const def = getCardDef(card.defId);
   const claimer = getPlayer(state, claimerId);
@@ -15,7 +17,7 @@ export function claimTopKernCard(state: GameState, claimerId: string, log: (m: s
   if (def.type === CardType.FLAG) {
     card.location = CardLocation.KERN_CLAIMED;
     card.ownerId = claimerId;
-    state.kern.claimed.push(card);
+    state.server.lootClaimed.push(card);
     log(`${claimer.displayName} đã lấy được ${def.name} trong THE KERN!`);
     const winner = checkFlagCapture(state, claimer.baseRole);
     if (winner) state.winner = winner;

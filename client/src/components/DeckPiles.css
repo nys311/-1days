@@ -1,0 +1,63 @@
+.deck-piles {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-end;
+}
+
+.deck-pile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.deck-pile__stack {
+  position: relative;
+  width: 44px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deck-pile__card {
+  position: absolute;
+  width: 40px;
+  height: 56px;
+  border-radius: 6px;
+  background: var(--cardback-bg);
+  border: 1.5px solid var(--border-strong);
+  top: calc(var(--i) * -2px);
+  left: calc(var(--i) * 1.5px);
+}
+.deck-pile__stack--used .deck-pile__card {
+  border-color: var(--text-dim);
+  opacity: 0.75;
+}
+
+.deck-pile__empty-slot {
+  width: 40px;
+  height: 56px;
+  border-radius: 6px;
+  border: 1.5px dashed var(--border);
+  background: transparent;
+}
+
+.deck-pile__count {
+  position: relative;
+  z-index: 10;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text);
+  text-shadow: 0 0 8px var(--shadow-color);
+}
+
+.deck-pile__label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  text-align: center;
+}
