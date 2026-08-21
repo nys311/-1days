@@ -5,8 +5,9 @@ import { env } from "./env";
 import { applyAction } from "./resolve";
 import { createInitialState } from "./setup";
 import { notifySubscribers } from "./notify";
+import { startTurn } from "./phases";
 import { afterMutation, createRoom, getRoom } from "./store";
-import { RuleError } from "./util";
+import { makeLogger, RuleError } from "./util";
 import { buildPlayerView } from "./view";
 
 const app = express();
@@ -19,6 +20,11 @@ app.post("/games/:roomId", (req, res) => {
   const body = req.body as EngineCreateGameRequest;
   try {
     const state = createInitialState(req.params.roomId, body.players);
+    // createInitialState only sets phase=DRAW as data — every other turn's DRAW auto-advance
+    // (draw-if-below-max-energy, then skip straight to PREPARE unless Boole) runs via startTurn()
+    // from endTurn(); without calling it here too, player 1 of round 1 would sit at DRAW forever
+    // with no action able to move them along.
+    startTurn(state, makeLogger(state));
     createRoom(state, body.subscriberUrls ?? []);
     notifySubscribers(body.subscriberUrls ?? [], { roomId: req.params.roomId, reason: "GAME_STARTED" });
     res.json({ ok: true });

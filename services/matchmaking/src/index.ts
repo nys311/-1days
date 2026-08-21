@@ -112,6 +112,22 @@ app.post("/rooms/:roomId/start", requireAuth, async (req: AuthedRequest, res) =>
     subscriberUrls,
   };
 
+  // Register every bot seat BEFORE the engine creates the game (and fires its GAME_STARTED
+  // notify to `bots`) — otherwise a bot whose seat isn't registered yet at notify-time misses
+  // its only wake-up signal and, if it happens to go first, the game stalls forever with no
+  // further engine mutation ever occurring to trigger a follow-up notify.
+  await Promise.all(
+    room.seats
+      .filter((s) => s.seatKind === SeatKind.BOT)
+      .map((seat) =>
+        fetch(`${env.BOTS_URL}/internal/register`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ roomId: room.roomId, playerId: seat.playerId, botLevel: seat.botLevel, engineUrl: env.ENGINE_URL }),
+        }).catch((err) => console.error("[matchmaking] bot register failed", err.message))
+      )
+  );
+
   const engineRes = await fetch(`${env.ENGINE_URL}/games/${room.roomId}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -120,14 +136,6 @@ app.post("/rooms/:roomId/start", requireAuth, async (req: AuthedRequest, res) =>
   if (!engineRes.ok) {
     const errBody = await engineRes.json().catch(() => ({}));
     return res.status(400).json({ error: (errBody as any).error ?? "engine_create_failed" });
-  }
-
-  for (const seat of room.seats.filter((s) => s.seatKind === SeatKind.BOT)) {
-    fetch(`${env.BOTS_URL}/internal/register`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ roomId: room.roomId, playerId: seat.playerId, botLevel: seat.botLevel, engineUrl: env.ENGINE_URL }),
-    }).catch((err) => console.error("[matchmaking] bot register failed", err.message));
   }
 
   markStarted(room);

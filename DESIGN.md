@@ -151,6 +151,27 @@ Chạy 20 ván bot-vs-bot tự động (Random + Rule, không qua matchmaking/DB
   hệ thống phản ứng (DEFEND/DENY), và toàn bộ năng lực persona đã kích hoạt đúng vẫn ổn định qua
   hàng nghìn vòng liên tục.
 
+### 7.1. Kiểm thử qua chuỗi thật (auth → gateway → matchmaking → engine → bots + Postgres)
+
+Bộ test bot-vs-bot ở trên gọi thẳng `engine`/`bots`, bỏ qua `matchmaking`/`auth` — nên không phát
+hiện được 2 lỗi chỉ xuất hiện khi đi qua đúng luồng thật. Sau khi dựng Postgres thật (Docker) và
+chạy toàn bộ 5 service + 1 client giả lập qua Socket.IO thật, phát hiện và sửa:
+
+- **Bug nghiêm trọng**: người chơi đầu tiên của round 1 bị kẹt vĩnh viễn ở pha BỐC BÀI.
+  `createInitialState` chỉ gán `phase: DRAW` như dữ liệu tĩnh, không chạy logic tự-động-qua-pha
+  (`startTurn`) mà mọi lượt khác đều chạy qua `endTurn`. Bot vẫn "né" được lỗi này vì luôn gửi
+  `END_PHASE` bất kể pha nào, nhưng người chơi thật (qua client) sẽ bị treo — game không chơi
+  được ngay từ người đi đầu tiên. Sửa: gọi `startTurn()` ngay sau khi tạo state ban đầu.
+- **Race condition**: `matchmaking` gọi `engine` tạo ván (kích hoạt webhook "GAME_STARTED" tới
+  `bots`) *trước khi* đăng ký các ghế bot với `bots`. Nếu người đi lượt đầu là bot, `bots` bỏ lỡ
+  tín hiệu duy nhất đó vì ghế chưa tồn tại trong registry lúc nhận webhook — và không có sự kiện
+  nào khác kích hoạt lại nên ván bị treo vĩnh viễn. Sửa: đăng ký toàn bộ ghế bot (await) *trước*
+  khi gọi engine tạo ván.
+- Sau 2 fix trên, xác nhận lại toàn bộ chuỗi thật hoạt động: đăng nhập (dev-login) → kết nối
+  Socket.IO qua JWT → tạo phòng/thêm bot/bắt đầu qua `matchmaking` (ghi `Room` vào Postgres) →
+  ván chạy qua `engine`+`bots` → gọi thủ công webhook GAME_OVER xác nhận `matchmaking` ghi đúng
+  `MatchHistory`/`MatchParticipant`/`UserStats` và chuyển `Room.status` sang `FINISHED`.
+
 ## 8. Việc còn để ngỏ (future work)
 
 - Alpha-beta bot: cần một bản mô phỏng luật thuần (không I/O) để search cây nước đi.
