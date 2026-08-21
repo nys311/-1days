@@ -344,6 +344,7 @@ function handleAttack(
 }
 
 function handleGiftCard(state: GameState, player: PlayerState, cardInstanceId: string, targetPlayerId: string, log: (m: string) => void) {
+  if (player.personaId !== PersonaId.HELLMAN) throw new RuleError("Chỉ Hellman mới có thể tặng bài.");
   const target = getPlayer(state, targetPlayerId);
   const card = findInZone(player.hand, cardInstanceId);
   removeFromZone(player.hand, cardInstanceId);

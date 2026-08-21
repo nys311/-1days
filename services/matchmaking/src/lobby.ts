@@ -56,12 +56,15 @@ export function getRoomByCode(code: string): LobbyRoom | undefined {
 }
 
 export function joinRoom(room: LobbyRoom, userId: string, displayName: string): Seat {
-  if (room.started) throw new Error("Bàn đã bắt đầu.");
+  // Reconnecting to a seat you already hold is allowed even after the room has started —
+  // this is the only path back in for someone who got disconnected mid-game. Only brand-new
+  // seats are blocked once play has begun.
   const existing = room.seats.find((s) => s.playerId === userId);
   if (existing) {
     existing.connected = true;
     return existing;
   }
+  if (room.started) throw new Error("Bàn đã bắt đầu.");
   if (room.seats.length >= room.maxPlayers) throw new Error("Bàn đã đầy.");
   const seat: Seat = {
     playerId: userId,

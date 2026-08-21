@@ -394,21 +394,13 @@ export const ActionBar: React.FC<ActionBarProps> = ({
         </SecondaryForm>
       )}
 
-      {/* ---------- quick action row ---------- */}
+      {/* ---------- quick action row (ordered to match phase order: BỐC BÀI -> GIẢI MÃ ->
+          HÀNH ĐỘNG -> BỎ BÀI -> hết lượt) ---------- */}
       {!composer.state.builder && !discardMode && !secondary && (
         <div className="action-bar__quick-row">
-          <button className="btn btn--primary" onClick={() => sendAction(roomId, { type: "END_PHASE" })}>
-            Kết thúc pha
-          </button>
-          <button className="btn" onClick={onToggleDiscardMode}>
-            Bỏ bài
-          </button>
-          <button className="btn" onClick={() => openSecondary("GIFT")} disabled={me.hand.length === 0 || others.length === 0}>
-            Tặng bài
-          </button>
-          {me.personaId === PersonaId.INSPECTOR && (
-            <button className="btn" onClick={() => openSecondary("AUDIT")} disabled={others.length === 0}>
-              Audit
+          {me.personaId === PersonaId.BOOLE && phase === RoundPhase.DRAW && (
+            <button className="btn" onClick={() => openSecondary("BOOLE")}>
+              Đổi bài (Boole)
             </button>
           )}
           {me.personaId === PersonaId.TURING && phase === RoundPhase.DECRYPT && (
@@ -416,9 +408,14 @@ export const ActionBar: React.FC<ActionBarProps> = ({
               Nhìn trộm
             </button>
           )}
-          {me.personaId === PersonaId.BOOLE && phase === RoundPhase.DRAW && (
-            <button className="btn" onClick={() => openSecondary("BOOLE")}>
-              Đổi bài (Boole)
+          {me.personaId === PersonaId.INSPECTOR && (
+            <button className="btn" onClick={() => openSecondary("AUDIT")} disabled={others.length === 0}>
+              Audit
+            </button>
+          )}
+          {me.personaId === PersonaId.HELLMAN && (
+            <button className="btn" onClick={() => openSecondary("GIFT")} disabled={me.hand.length === 0 || others.length === 0}>
+              Tặng bài
             </button>
           )}
           {me.personaId === PersonaId.EVE && (
@@ -431,6 +428,12 @@ export const ActionBar: React.FC<ActionBarProps> = ({
               Thi hành Dân chủ
             </button>
           )}
+          <button className="btn" onClick={onToggleDiscardMode}>
+            Bỏ bài
+          </button>
+          <button className="btn btn--primary" onClick={() => sendAction(roomId, { type: "END_PHASE" })}>
+            Kết thúc pha
+          </button>
           {!isMyTurn && <span className="action-bar__not-your-turn">Chưa đến lượt bạn</span>}
         </div>
       )}

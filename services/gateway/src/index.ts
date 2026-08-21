@@ -44,14 +44,25 @@ async function forwardJson(path: string, base: string, token: string, method: st
   return json as any;
 }
 
-async function pushLobbyState(roomId: string) {
+async function pushLobbyState(roomId: string): Promise<{ started: boolean } | null> {
   try {
-    const lobby = await fetch(`${env.MATCHMAKING_URL}/rooms/${roomId}/lobby`).then((r) => r.json());
+    const lobby = (await fetch(`${env.MATCHMAKING_URL}/rooms/${roomId}/lobby`).then((r) => r.json())) as { started: boolean };
     for (const socketId of getSocketsForRoom(roomId)) {
       io.to(socketId).emit(SOCKET_EVENTS.LOBBY_STATE, lobby);
     }
+    return lobby;
   } catch (err) {
     console.error("[gateway] pushLobbyState failed", err);
+    return null;
+  }
+}
+
+async function pushGameStateTo(socketId: string, roomId: string, playerId: string) {
+  try {
+    const view = await fetch(`${env.ENGINE_URL}/games/${roomId}/view/${playerId}`).then((r) => r.json());
+    io.to(socketId).emit(SOCKET_EVENTS.GAME_STATE, view);
+  } catch (err) {
+    console.error("[gateway] pushGameStateTo failed for", playerId, err);
   }
 }
 
@@ -59,12 +70,7 @@ async function pushGameState(roomId: string) {
   for (const socketId of getSocketsForRoom(roomId)) {
     const conn = getConn(socketId);
     if (!conn) continue;
-    try {
-      const view = await fetch(`${env.ENGINE_URL}/games/${roomId}/view/${conn.playerId}`).then((r) => r.json());
-      io.to(socketId).emit(SOCKET_EVENTS.GAME_STATE, view);
-    } catch (err) {
-      console.error("[gateway] pushGameState failed for", conn.playerId, err);
-    }
+    await pushGameStateTo(socketId, roomId, conn.playerId);
   }
 }
 
@@ -87,7 +93,8 @@ io.on("connection", (socket: Socket) => {
       });
       attachSocketToRoom(socket.id, result.roomId, result.playerId);
       socket.join(`room:${result.roomId}`);
-      await pushLobbyState(result.roomId);
+      const lobby = await pushLobbyState(result.roomId);
+      if (lobby?.started) await pushGameStateTo(socket.id, result.roomId, result.playerId);
       ack?.(result);
     } catch (err) {
       sendError(socket, "quick_join_failed", (err as Error).message);
@@ -118,7 +125,10 @@ io.on("connection", (socket: Socket) => {
       });
       attachSocketToRoom(socket.id, result.roomId, result.playerId);
       socket.join(`room:${result.roomId}`);
-      await pushLobbyState(result.roomId);
+      const lobby = await pushLobbyState(result.roomId);
+      // Rejoining a room that already started (e.g. after a disconnect) — the lobby screen has
+      // no way to progress from here, so hand the socket the live game state directly.
+      if (lobby?.started) await pushGameStateTo(socket.id, result.roomId, result.playerId);
       ack?.(result);
     } catch (err) {
       sendError(socket, "join_room_failed", (err as Error).message);

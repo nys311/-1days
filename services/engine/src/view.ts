@@ -27,13 +27,19 @@ function visibleCard(card: CardInstance, viewerId: string, ownerIdForVisibility:
 
 function visiblePlayer(p: PlayerState, viewerId: string): PlayerView["players"][number] {
   const isYou = p.id === viewerId;
+  // Persona INSPECTOR is exclusive to (and forced for) the INSPECTOR base-role, and personas are
+  // always public — so seeing that persona already tells everyone the base-role, with no secrecy
+  // lost by also showing it openly. This does NOT extend to `defeatedBaseRoles` below: identities
+  // the Inspector has secretly absorbed by auditing a defeated player stay hidden until the
+  // Inspector's own defeat, same as anyone else.
+  const roleKnown = p.baseRoleRevealed || isYou || p.personaId === "INSPECTOR";
   return {
     id: p.id,
     displayName: p.displayName,
     seatIndex: p.seatIndex,
     seatKind: p.seatKind,
     botLevel: p.botLevel,
-    baseRole: p.baseRoleRevealed || isYou ? p.baseRole : null,
+    baseRole: roleKnown ? p.baseRole : null,
     baseRoleRevealed: p.baseRoleRevealed,
     personaId: p.personaId, // personas are always public
     hp: p.hp,

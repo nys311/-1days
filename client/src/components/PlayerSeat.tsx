@@ -24,6 +24,10 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
   onInspectCard,
 }) => {
   const personaDefId = player.personaId ? PERSONA_CATALOG[player.personaId].id : null;
+  // Own base-role is always known to you; an INSPECTOR persona (always public, and exclusive to
+  // the INSPECTOR base-role) already tells everyone the base-role too, so show it face-up openly
+  // instead of as a hidden card — the engine sends `baseRole` non-null in both cases already.
+  const baseRoleKnown = player.baseRoleRevealed || isYou || player.personaId === "INSPECTOR";
 
   return (
     <div
@@ -53,11 +57,11 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
       <div className="player-seat__roles">
         <Card
           instanceId={`br-${player.id}`}
-          defId={player.baseRoleRevealed && player.baseRole ? baseRoleDefId(player.baseRole) : null}
+          defId={baseRoleKnown && player.baseRole ? baseRoleDefId(player.baseRole) : null}
           revealedType={CardType.BASE_ROLE}
-          faceUp={player.baseRoleRevealed}
+          faceUp={baseRoleKnown}
           size="sm"
-          onInspect={player.baseRoleRevealed ? onInspectCard : undefined}
+          onInspect={baseRoleKnown ? onInspectCard : undefined}
         />
         <Card
           instanceId={`pe-${player.id}`}
